@@ -1,0 +1,38 @@
+version: '3.2'
+
+services:
+  node-lab-backend:
+    image: janobono/node-lab-backend:latest
+    restart: unless-stopped
+    ports:
+      - 8081:3000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.node-lab-backend.rule=PathPrefix(`/api`)
+      - traefik.http.routers.node-lab-backend.entrypoints=web
+      - traefik.http.services.node-lab-backend.loadbalancer.server.port=3000
+
+  node-lab-frontend:
+    image: janobono/node-lab-frontend:latest
+    restart: unless-stopped
+    ports:
+      - 8082:80
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.node-lab-frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.node-lab-frontend.entrypoints=web
+      - traefik.http.services.node-lab-frontend.loadbalancer.server.port=80
+
+  traefik:
+    image: traefik:v2.2
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--log.level=DEBUG"
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
