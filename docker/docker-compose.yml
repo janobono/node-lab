@@ -8,7 +8,7 @@ services:
       - 8081:3000
     labels:
       - traefik.enable=true
-      - traefik.http.routers.node-lab-backend.rule=PathPrefix(`/api`)
+      - traefik.http.routers.node-lab-backend.rule=PathPrefix(`/api/node-lab-backend`)
       - traefik.http.routers.node-lab-backend.entrypoints=web
       - traefik.http.services.node-lab-backend.loadbalancer.server.port=3000
 
