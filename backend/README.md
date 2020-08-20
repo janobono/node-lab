@@ -5,8 +5,21 @@ Node lab backend service.
 ***tech stack***
 
 * [Node.js](https://nodejs.org)
-* [Nest](https://github.com/nestjs/nest)
+* [Express.js](https://expressjs.com/)
 * [Docker](https://www.docker.com)
+
+***environment variables (.env file)***
+
+|Name|Default value|Description|
+|---|---|---|
+|APP_PORT|8000|server port|
+|INFO_MESSAGE|Info message is empty or not set.|info message|
+
+***endpoints - !!!must be replaced by OpenAPI doc!!!***
+
+|Path=`/api/node-lab-backend`+|Description|
+|---|---|
+|`/info`|health check message endpoint|
 
 ## Build
 
@@ -25,31 +38,15 @@ Node.js local installation needed.
 #### Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
 #### Running the app
 
 ```bash
-# development
-$ npm run start
-
 # watch mode
-$ npm run start:dev
+npm run start:dev
 
 # production mode
-$ npm run start:prod
-```
-
-#### Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:prod
 ```

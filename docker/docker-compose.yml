@@ -1,22 +1,33 @@
 version: '3.2'
 
 services:
+  pg:
+    image: postgres:12-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
   node-lab-backend:
     image: janobono/node-lab-backend:latest
     restart: unless-stopped
-    ports:
-      - 8081:3000
+    environment:
+      - INFO_MESSAGE=Node lab application backend is running - dev mode.
+    depends_on:
+      - pg
     labels:
       - traefik.enable=true
       - traefik.http.routers.node-lab-backend.rule=PathPrefix(`/api/node-lab-backend`)
       - traefik.http.routers.node-lab-backend.entrypoints=web
-      - traefik.http.services.node-lab-backend.loadbalancer.server.port=3000
+      - traefik.http.services.node-lab-backend.loadbalancer.server.port=8080
 
   node-lab-frontend:
     image: janobono/node-lab-frontend:latest
     restart: unless-stopped
-    ports:
-      - 8082:80
     labels:
       - traefik.enable=true
       - traefik.http.routers.node-lab-frontend.rule=PathPrefix(`/`)
@@ -24,7 +35,7 @@ services:
       - traefik.http.services.node-lab-frontend.loadbalancer.server.port=80
 
   traefik:
-    image: traefik:v2.2
+    image: traefik:v2.3
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -36,3 +47,6 @@ services:
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  pg-data:

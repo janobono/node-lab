@@ -1,19 +1,7 @@
-FROM node:12.18-alpine As development
+FROM node:12.18-alpine
 
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install --only=development
-
-COPY . .
-
-RUN npm run build
-
-FROM node:12.18-alpine as production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+ENV NODE_ENV="production" \
+    INFO_MESSAGE="Node lab application backend is running from docker."
 
 WORKDIR /usr/src/app
 
@@ -23,8 +11,6 @@ RUN npm install --only=production
 
 COPY . .
 
-COPY --from=development /usr/src/app/dist ./dist
+EXPOSE 8080
 
-EXPOSE 3000
-
-CMD ["node", "dist/main"]
+CMD [ "node", "app.js" ]
