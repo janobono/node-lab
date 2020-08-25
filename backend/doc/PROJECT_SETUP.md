@@ -7,7 +7,7 @@ npm init -y
 
 ## TypeScript
 ```
-npm i -D typescript
+npm i -D typescript ts-node @types/node
 ```
 
 ### Config
@@ -27,7 +27,7 @@ npm i -D @types/express
 
 ## Nodemon
 ```
-npm i -D nodemon ts-node
+npm i -D nodemon
 ```
 created `nodemon.json` more info [here](https://github.com/remy/nodemon#nodemon)
 
