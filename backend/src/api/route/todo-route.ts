@@ -10,7 +10,7 @@ router.get('/', TodoController.getTodos);
 router.get('/:id', TodoController.getTodo);
 
 const todoDataHandlers = [
-    body('title').trim().notEmpty(),
+    body('title').trim().notEmpty().isLength({max: 255}),
     body('content').trim().notEmpty()
 ];
 

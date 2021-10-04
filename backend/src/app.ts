@@ -1,11 +1,13 @@
-import express from 'express';
-
-import todoRouter from './api/route/todo-route';
-
 // DEVELOPMENT ENV
 if ('production' !== process.env.NODE_ENV) {
     require('dotenv').config();
 }
+
+// IMPORTS
+import express from 'express';
+import logger from './logger';
+import sequelize from './dao';
+import todoRouter from './api/route/todo-route';
 
 // APP
 const app = express();
@@ -23,27 +25,30 @@ app.use((req, res, next) => {
 
 // ROUTES
 const createRoute = (path: string) => {
-    const CONTEXT_PATH = process.env.CONTEXT_PATH ? process.env.CONTEXT_PATH : '';
-    return [CONTEXT_PATH, path].join('/');
+    return [process.env.APP_CONTEXT_PATH ? process.env.APP_CONTEXT_PATH : '', path].join('/');
 }
 
 // TODOS
 app.use(createRoute('todos'), todoRouter);
 
 // HEALTH
-app.get(createRoute('health'), (req, res, next) => {
-    res.status(200).send('OK').end();
+app.get(createRoute('health'), (req, res) => {
+    res.status(200).end('OK');
 });
 
 // 404
-app.use((req, res, next) => {
-    res.status(404).send('Route not found!').end();
+app.use((req, res) => {
+    res.status(404).end('Route not found!');
 });
 
 // START SERVER
-const PORT = process.env.APP_PORT ? process.env.APP_PORT : '8080';
-app.listen(PORT, () => {
-    console.log(`Server running at port ${PORT}.`);
+app.listen(process.env.APP_PORT, () => {
+    logger.debug(`Server running at port ${process.env.APP_PORT}.`);
 });
 
-// CLEAN UP
+sequelize.authenticate()
+    .then(() => logger.debug('Connection has been established successfully.'))
+    .catch(error => {
+        logger.error('Unable to connect to the database:', error);
+        process.exit(-1);
+    });

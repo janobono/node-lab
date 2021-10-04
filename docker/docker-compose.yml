@@ -12,41 +12,41 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 
-  node-lab-backend:
-    image: janobono/node-lab-backend:latest
-    restart: unless-stopped
-    environment:
-      - INFO_MESSAGE=Node lab application backend is running - dev mode.
-    depends_on:
-      - pg
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.node-lab-backend.rule=PathPrefix(`/api/node-lab-backend`)
-      - traefik.http.routers.node-lab-backend.entrypoints=web
-      - traefik.http.services.node-lab-backend.loadbalancer.server.port=8080
-
-  node-lab-frontend:
-    image: janobono/node-lab-frontend:latest
-    restart: unless-stopped
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.node-lab-frontend.rule=PathPrefix(`/`)
-      - traefik.http.routers.node-lab-frontend.entrypoints=web
-      - traefik.http.services.node-lab-frontend.loadbalancer.server.port=80
-
-  traefik:
-    image: traefik:v2.3
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--log.level=DEBUG"
-    ports:
-      - 80:80
-      - 8080:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#  node-lab-backend:
+#    image: janobono/node-lab-backend:latest
+#    restart: unless-stopped
+#    environment:
+#      - INFO_MESSAGE=Node lab application backend is running - dev mode.
+#    depends_on:
+#      - pg
+#    labels:
+#      - traefik.enable=true
+#      - traefik.http.routers.node-lab-backend.rule=PathPrefix(`/api/node-lab-backend`)
+#      - traefik.http.routers.node-lab-backend.entrypoints=web
+#      - traefik.http.services.node-lab-backend.loadbalancer.server.port=8080
+#
+#  node-lab-frontend:
+#    image: janobono/node-lab-frontend:latest
+#    restart: unless-stopped
+#    labels:
+#      - traefik.enable=true
+#      - traefik.http.routers.node-lab-frontend.rule=PathPrefix(`/`)
+#      - traefik.http.routers.node-lab-frontend.entrypoints=web
+#      - traefik.http.services.node-lab-frontend.loadbalancer.server.port=80
+#
+#  traefik:
+#    image: traefik:v2.3
+#    command:
+#      - "--api.insecure=true"
+#      - "--providers.docker=true"
+#      - "--providers.docker.exposedbydefault=false"
+#      - "--entrypoints.web.address=:80"
+#      - "--log.level=DEBUG"
+#    ports:
+#      - 80:80
+#      - 8080:8080
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes:
   pg-data:
