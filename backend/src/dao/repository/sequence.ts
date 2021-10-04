@@ -1,8 +1,8 @@
 import sequelize from '../index';
 import { QueryTypes } from 'sequelize';
 
-export const nextVal = (sequenceName: string): Promise<BigInt> => {
-    return sequelize.query<BigInt>(
+export const nextVal = (sequenceName: string): Promise<string> => {
+    return sequelize.query<String>(
         'SELECT nextval($1)',
         {
             bind: [sequenceName],
@@ -13,22 +13,6 @@ export const nextVal = (sequenceName: string): Promise<BigInt> => {
         result => {
             // @ts-ignore
             return result.nextval;
-        }
-    );
-}
-
-export const currVal = (sequenceName: string): Promise<BigInt> => {
-    return sequelize.query<BigInt>(
-        'SELECT currval($1)',
-        {
-            bind: [sequenceName],
-            type: QueryTypes.SELECT,
-            plain: true
-        }
-    ).then(
-        result => {
-            // @ts-ignore
-            return result.currval;
         }
     );
 }

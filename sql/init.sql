@@ -20,3 +20,9 @@ alter table nl_todo
 -- UNIQUE
 alter table nl_todo
     add constraint u_nl_todo unique (title);
+
+-- DATA
+insert into nl_todo (id, title, content)
+values (nextval('sq_nl_todo'), 'test01', 'Just test TODO - 1');
+insert into nl_todo (id, title, content)
+values (nextval('sq_nl_todo'), 'test02', 'Just test TODO - 2');

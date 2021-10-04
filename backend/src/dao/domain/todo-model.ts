@@ -9,13 +9,13 @@ const TodoModel = sequelize.define(
             primaryKey: true,
             type: DataTypes.BIGINT,
         },
-        username: {
+        title: {
             field: 'title',
             type: DataTypes.STRING,
             unique: true,
             allowNull: false
         },
-        password: {
+        content: {
             field: 'content',
             type: DataTypes.TEXT,
             allowNull: false
