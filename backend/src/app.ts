@@ -7,6 +7,7 @@ if ('production' !== process.env.NODE_ENV) {
 import express from 'express';
 import logger from './logger';
 import sequelize from './dao';
+import authRouter from './api/route/auth-route';
 import todoRouter from './api/route/todo-route';
 
 // APP
@@ -27,6 +28,9 @@ app.use((req, res, next) => {
 const createRoute = (path: string) => {
     return [process.env.APP_CONTEXT_PATH ? process.env.APP_CONTEXT_PATH : '', path].join('/');
 }
+
+// AUTH
+app.use(createRoute('auth'), authRouter);
 
 // TODOS
 app.use(createRoute('todos'), todoRouter);
