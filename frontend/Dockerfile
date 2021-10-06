@@ -1,4 +1,4 @@
-FROM node:12.18-alpine As development
+FROM node:lts-alpine As development
 
 WORKDIR /usr/src/app
 
@@ -12,4 +12,4 @@ RUN npm run build
 
 FROM nginx:stable as production
 
-COPY --from=development /usr/src/app/dist/node-lab-frontend /usr/share/nginx/html
+COPY --from=development /usr/src/app/build /usr/share/nginx/html

@@ -36,14 +36,14 @@ services:
       - traefik.http.routers.node-lab-backend.entrypoints=web
       - traefik.http.services.node-lab-backend.loadbalancer.server.port=8080
 
-#  node-lab-frontend:
-#    image: janobono/node-lab-frontend:latest
-#    restart: unless-stopped
-#    labels:
-#      - traefik.enable=true
-#      - traefik.http.routers.node-lab-frontend.rule=PathPrefix(`/`)
-#      - traefik.http.routers.node-lab-frontend.entrypoints=web
-#      - traefik.http.services.node-lab-frontend.loadbalancer.server.port=80
+  node-lab-frontend:
+    image: janobono/node-lab-frontend:latest
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.node-lab-frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.node-lab-frontend.entrypoints=web
+      - traefik.http.services.node-lab-frontend.loadbalancer.server.port=80
 
   traefik:
     image: traefik:v2.3
