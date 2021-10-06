@@ -13,13 +13,26 @@ create table nl_todo
     content text         not null
 );
 
+create table nl_user
+(
+    username   varchar(255)  not null,
+    password   varchar(1024) not null,
+    first_name varchar(255)  not null,
+    last_name  varchar(255)  not null,
+    email      varchar(255)  not null
+);
+
 -- PK
 alter table nl_todo
     add primary key (id);
+alter table nl_user
+    add primary key (username);
 
 -- UNIQUE
 alter table nl_todo
     add constraint u_nl_todo unique (title);
+alter table nl_user
+    add constraint u_nl_user unique (email);
 
 -- DATA
 insert into nl_todo (id, title, content)

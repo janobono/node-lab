@@ -1,23 +1,23 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-
 import * as TodoController from '../controller/todo-controller';
+import { checkTokenHandler } from '../../jwt';
 
 const router = Router();
 
-router.get('/', TodoController.getTodos);
+router.get('/', checkTokenHandler, TodoController.getTodos);
 
-router.get('/:id', TodoController.getTodo);
+router.get('/:id', checkTokenHandler, TodoController.getTodo);
 
 const todoDataHandlers = [
     body('title').trim().notEmpty().isLength({max: 255}),
     body('content').trim().notEmpty()
 ];
 
-router.post('/', todoDataHandlers, TodoController.addTodo);
+router.post('/', checkTokenHandler, todoDataHandlers, TodoController.addTodo);
 
-router.put('/:id', todoDataHandlers, TodoController.setTodo);
+router.put('/:id', checkTokenHandler, todoDataHandlers, TodoController.setTodo);
 
-router.delete('/:id', TodoController.deleteTodo);
+router.delete('/:id', checkTokenHandler, TodoController.deleteTodo);
 
 export default router;

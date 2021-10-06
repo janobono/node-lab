@@ -10,7 +10,7 @@ router.post('/sign-in', [
     body('password').trim().notEmpty().isLength({max: 255}),
     body('firstName').trim().notEmpty().isLength({max: 255}),
     body('lastName').trim().notEmpty().isLength({max: 255}),
-    body('email').trim().notEmpty().isLength({max: 255})
+    body('email').trim().notEmpty().isLength({max: 255}).isEmail()
 ], AuthController.signIn);
 
 router.post('/authenticate', [

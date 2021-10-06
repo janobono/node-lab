@@ -1,4 +1,5 @@
 import jwt, { Jwt, VerifyCallback } from 'jsonwebtoken';
+import { NextFunction, Request, Response } from 'express';
 
 export interface Payload {
     username: string,
@@ -29,4 +30,20 @@ export const decodeToken = (token: string): Payload => {
 
 export const verifyToken = (token: string, secret: string, callback: VerifyCallback) => {
     jwt.verify(token, secret, callback);
+}
+
+export const checkTokenHandler = (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.sendStatus(401);
+    }
+    verifyToken(token, process.env.TOKEN_SECRET as string, (err, payload) => {
+        if (err) {
+            return res.sendStatus(403);
+        }
+        // @ts-ignore
+        req.payload = {...payload} as Payload;
+        next();
+    })
 }

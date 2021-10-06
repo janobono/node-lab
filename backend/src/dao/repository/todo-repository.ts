@@ -1,6 +1,6 @@
-import TodoModel from '../domain/todo-model';
-import { nextVal } from './sequence';
 import { Model } from 'sequelize';
+import { nextVal } from './sequence';
+import TodoModel from '../domain/todo-model';
 
 export interface Todo {
     id: string,

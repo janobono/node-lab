@@ -8,8 +8,7 @@ const token = jwt.generateToken({
         username: 'test',
         firstName: 'Jimbo',
         lastName: 'Pytlik',
-        email: 'jimbo.pytlik@anymail.org',
-        roles: ['role01', 'role02']
+        email: 'jimbo.pytlik@anymail.org'
     },
     secret, {issuer: 'test', expiresIn: '1h'});
 console.log('token:', token);

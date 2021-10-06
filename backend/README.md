@@ -25,7 +25,7 @@ For development purposes use `.env` file. In production set environment variable
 |DB_PORT|database port|
 |DB_NAME|database name|
 |DB_USER|database user|
-|DB_PASSWORD|database user|
+|DB_PASSWORD|database password|
 |TOKEN_ISSUER|token issuer for example `node-lab`|
 |TOKEN_SECRET|token secret, can be generated via `new-token` node script|
 |TOKEN_EXPIRES_IN|token expiration for example `1800s`|
@@ -35,8 +35,10 @@ For development purposes use `.env` file. In production set environment variable
 |Path=`/api/node-lab-backend`+|Description|
 |---|---|
 |GET `/health`|health check|
-|GET `/todos`|all todos endpoint|
-|GET `/todo/:id`|get todo endpoint|
-|GET `/health`|health check message endpoint|
-|GET `/health`|health check message endpoint|
-|GET `/health`|health check message endpoint|
+|POST `/sign-in`|sign in|
+|POST `/authenticate`|authenticate|
+|GET `/todos`|get all todos|
+|GET `/todos/:id`|get todo|
+|POST `/todos`|add todo|
+|PUT `/todos/:id`|set todo|
+|DELETE `/todos/:id`|delete todo|

@@ -55,6 +55,11 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
+"@types/bcryptjs@^2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@types/bcryptjs/-/bcryptjs-2.4.2.tgz#e3530eac9dd136bfdfb0e43df2c4c5ce1f77dfae"
+  integrity sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==
+
 "@types/body-parser@*":
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.1.tgz#0c0174c42a7d017b818303d4b5d969cb0b75929c"
@@ -78,13 +83,6 @@
     "@types/node" "*"
     "@types/qs" "*"
     "@types/range-parser" "*"
-
-"@types/express-validator@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/express-validator/-/express-validator-3.0.0.tgz#e6f3cab842e5ae376a1cfa11295202ec380b68d1"
-  integrity sha512-LusnB0YhTXpBT25PXyGPQlK7leE1e41Vezq1hHEUwjfkopM1Pkv2X2Ppxqh9c+w/HZ6Udzki8AJotKNjDTGdkQ==
-  dependencies:
-    express-validator "*"
 
 "@types/express@^4.17.13":
   version "4.17.13"
@@ -130,13 +128,6 @@
   dependencies:
     "@types/mime" "^1"
     "@types/node" "*"
-
-"@types/winston@^2.4.4":
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/@types/winston/-/winston-2.4.4.tgz#48cc744b7b42fad74b9a2e8490e0112bd9a3d08d"
-  integrity sha512-BVGCztsypW8EYwJ+Hq+QNYiT/MUyCif0ouBH+flrY66O5W+KIXAMML6E/0fJpm7VjIzgangahl5S03bJJQGrZw==
-  dependencies:
-    winston "*"
 
 abbrev@1:
   version "1.1.1"
@@ -212,6 +203,11 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
+
+bcryptjs@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
+  integrity sha1-mrVie5PmBiH/fNrF2pczAn3x0Ms=
 
 binary-extensions@^2.0.0:
   version "2.2.0"
@@ -567,7 +563,7 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-express-validator@*, express-validator@^6.12.2:
+express-validator@^6.12.2:
   version "6.12.2"
   resolved "https://registry.yarnpkg.com/express-validator/-/express-validator-6.12.2.tgz#0ee3e34338223ae6ed9a97532ff3687fd561db90"
   integrity sha512-UMVck7ZWrKH7eX75CRYk/pAc9jxZk8Ddsdkukw1R7LTWuQNiDaooz6nVfIdg33qZUHCuv2m2o+RS4pTMaLjGmA==
@@ -1754,7 +1750,7 @@ winston-transport@^4.4.0:
     readable-stream "^2.3.7"
     triple-beam "^1.2.0"
 
-winston@*, winston@^3.3.3:
+winston@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/winston/-/winston-3.3.3.tgz#ae6172042cafb29786afa3d09c8ff833ab7c9170"
   integrity sha512-oEXTISQnC8VlSAKf1KYSSd7J6IWuRPQqDdo8eoRNaYKLvwSb5+79Z3Yi1lrl6KDpU6/VWaxpakDAtb1oQ4n9aw==
