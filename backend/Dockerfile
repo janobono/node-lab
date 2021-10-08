@@ -1,6 +1,6 @@
 FROM node:lts-alpine As development
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -13,14 +13,19 @@ RUN npm run tsc
 
 FROM node:lts-alpine as production
 
+WORKDIR /app
+
 ENV NODE_ENV=production
 
-WORKDIR /usr/src/app
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
 
 COPY package*.json ./
 
 RUN npm install --only=production
 
-COPY --from=development /usr/src/app/build ./build
+COPY --from=development /app/build ./build
+
+USER nodejs
 
 CMD ["node", "./build/app.js"]
