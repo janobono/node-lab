@@ -5,7 +5,7 @@ import { checkTokenHandler } from '../../jwt';
 
 const router = Router();
 
-router.get('/', checkTokenHandler, TodoController.getTodos);
+router.get('/', TodoController.getTodos);
 
 router.get('/:id', checkTokenHandler, TodoController.getTodo);
 

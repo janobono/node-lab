@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export interface AuthContextValue {
     isLoggedIn: boolean,
@@ -17,6 +18,8 @@ const AuthContext = React.createContext<AuthContextValue>({
 export const AuthContextProvider: FunctionComponent = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const history = useHistory();
+
     useEffect(() => {
         const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
         if (storedUserLoggedInInformation === '1') {
@@ -30,12 +33,14 @@ export const AuthContextProvider: FunctionComponent = (props) => {
         // But it's just a dummy/ demo anyways
         localStorage.setItem('isLoggedIn', '1');
         setIsLoggedIn(true);
+        history.push('/');
     };
 
     const logout = () => {
         console.log('AuthContextProvider.logout');
         localStorage.removeItem('isLoggedIn');
         setIsLoggedIn(false);
+        history.push('/');
     };
 
     return (

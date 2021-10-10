@@ -39,3 +39,7 @@ insert into nl_todo (id, title, content)
 values (nextval('sq_nl_todo'), 'test01', 'Just test TODO - 1');
 insert into nl_todo (id, title, content)
 values (nextval('sq_nl_todo'), 'test02', 'Just test TODO - 2');
+
+insert into nl_user (username, password, first_name, last_name, email)
+values ('jimbop', '$2a$12$wWa8P0wPNm1.JLTP5Yavnu0xnp1tMT4Bqt2NI7eJJmyIM671MI0ki', 'Jimbo', 'Pytlik',
+        'jimbo.pytlik@anymail.org');
