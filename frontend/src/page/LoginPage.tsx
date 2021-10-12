@@ -14,44 +14,39 @@ const LoginPage: FunctionComponent = () => {
     const loginHandler = (event: FormEvent) => {
         event.preventDefault();
 
-        const enteredUsername = usernameInput.current!.value;
-        if (enteredUsername.trim().length === 0) {
-            setUsernameValid(false);
-            return;
-        }
-        setUsernameValid(true);
+        const enteredUsername = usernameInput.current!.value.trim();
+        setUsernameValid(enteredUsername.length > 0);
 
-        const enteredPassword = passwordInput.current!.value;
-        if (enteredPassword.trim().length === 0) {
-            setPasswordValid(false);
-            return;
-        }
-        setPasswordValid(true);
+        const enteredPassword = passwordInput.current!.value.trim();
+        setPasswordValid(enteredPassword.length > 0);
 
-        authCtx.onLogin(enteredUsername, enteredPassword);
+        if (enteredUsername.length > 0 && enteredPassword.length > 0) {
+            authCtx.onLogin(enteredUsername, enteredPassword);
+        }
     }
 
     return (
-        <section className="section">
+        <article className="w3-container w3-padding">
             <form onSubmit={loginHandler}>
-                <div className="field">
-                    <label className="label">Username</label>
-                    <div className="control">
-                        <input className="input" type="text" id="username" ref={usernameInput}/>
+                <div>
+                    <label>Username</label>
+                    <div>
+                        <input type="text" id="username" ref={usernameInput}/>
                     </div>
-                    {!usernameValid && <p className="help is-danger">Invalid username!</p>}
+                    {!usernameValid && <p>Invalid username!</p>}
                 </div>
 
-                <div className="field">
-                    <label className="label">Password</label>
-                    <div className="control">
-                        <input className="input" type="password" id="password" ref={passwordInput}/>
+                <div>
+                    <label>Password</label>
+                    <div>
+                        <input type="password" id="password" ref={passwordInput}/>
                     </div>
                     {!passwordValid && <p className="help is-danger">Invalid password!</p>}
                 </div>
-                <Button type={'submit'}>Login</Button>
+                <Button type={'submit'} className="w3-green"
+                        disabled={!usernameValid || !passwordValid}>Login</Button>
             </form>
-        </section>
+        </article>
     );
 };
 

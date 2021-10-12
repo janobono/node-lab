@@ -6,7 +6,7 @@ const Layout: FunctionComponent = (props) => {
     return (
         <React.Fragment>
             <Header/>
-            <main>{props.children}</main>
+            <main className="w3-container">{props.children}</main>
             <Footer/>
         </React.Fragment>
     );

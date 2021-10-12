@@ -6,7 +6,7 @@ type Props = {
 
 const Card: FunctionComponent<Props> = (props) => {
     return (
-        <div className={`card ${props.className}`}>{props.children}</div>
+        <div className={`w3-card ${props.className}`}>{props.children}</div>
     );
 };
 

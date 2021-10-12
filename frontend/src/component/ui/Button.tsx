@@ -11,7 +11,7 @@ const Button: FunctionComponent<Props> = (props) => {
     return (
         <button
             type={props.type || 'button'}
-            className={`button ${props.className}`}
+            className={`w3-button ${props.className}`}
             onClick={props.onClick}
             disabled={props.disabled}
         >

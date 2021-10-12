@@ -17,14 +17,14 @@ const Footer: FunctionComponent = () => {
     }, []);
 
     return (
-        <footer className="footer">
-            <div className="content has-text-centered">
+        <footer className="w3-container w3-gray w3-center w3-padding">
+            <div>
                 <p>
                     <strong>Node Lab</strong> by <a href="https://www.janobono.com/">janobono</a>. The source code is
                     free.
                 </p>
-                {health ? <span className="tag is-success is-light" onClick={healthHandler}>Backend healthy</span> :
-                    <span className="tag is-danger is-light" onClick={healthHandler}>Backend Error</span>}
+                {health ? <span onClick={healthHandler} className="w3-tag w3-green">Backend healthy</span> :
+                    <span onClick={healthHandler} className="w3-tag w3-red">Backend Error</span>}
             </div>
         </footer>
     );
