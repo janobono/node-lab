@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   pg:
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     ports:
       - 5432:5432
     environment:
@@ -17,17 +17,9 @@ services:
     image: janobono/node-lab-backend:latest
     restart: unless-stopped
     environment:
-      - APP_LOG_LEVEL=debug
-      - APP_PORT=8080
-      - APP_CONTEXT_PATH=/api/node-lab-backend
-      - DB_HOST=pg
-      - DB_PORT=5432
-      - DB_NAME=app
-      - DB_USER=app
-      - DB_PASSWORD=app
+      - DATABASE_URL=postgresql://app:app@pg:5432/app?schema=public
       - TOKEN_ISSUER=node-lab
       - TOKEN_SECRET=559b5bf9a85957c48b447f666922588fe12d26452189d52dec924b68f7713fdb5a85c681145ddeb4291e37ccd6224e87643cedd118eb425d546c560f35ef1f11
-      - TOKEN_EXPIRES_IN=1800s
     depends_on:
       - pg
     labels:

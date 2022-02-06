@@ -1,14 +1,10 @@
-FROM node:lts-alpine As development
+FROM node:16-alpine As development
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-RUN npm install --only=development
-
 COPY . .
 
-RUN npm run build
+RUN yarn && yarn build
 
 FROM nginx:stable as production
 
