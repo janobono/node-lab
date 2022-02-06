@@ -1,31 +1,47 @@
-FROM node:lts-alpine As development
+# Setup all node_modules
+FROM node:16-alpine as deps
 
 WORKDIR /app
 
-COPY package*.json ./
+ADD package*.json ./
+ADD ./prisma ./prisma
 
-RUN npm install
+RUN npm install --production=false
+RUN npx prisma generate
 
-COPY tsconfig.json ./
-COPY src ./src
-
-RUN npm run tsc
-
-FROM node:lts-alpine as production
+# Setup production node_modules
+FROM node:16-alpine as production-deps
 
 WORKDIR /app
+
+COPY --from=deps /app/node_modules /app/node_modules
+ADD package*.json ./
+RUN npm prune --production
+
+# Build the app
+FROM node:16-alpine as build
 
 ENV NODE_ENV=production
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
+WORKDIR /app
 
-COPY package*.json ./
+COPY --from=deps /app/node_modules /app/node_modules
 
-RUN npm install --only=production
+ADD . .
 
-COPY --from=development /app/build ./build
+RUN npm run tsc
 
-USER nodejs
+# Build production image
+FROM node:16-alpine as prod
+
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --from=production-deps /app/node_modules /app/node_modules
+
+COPY --from=build /app/build /app/build
+
+EXPOSE 8080
 
 CMD ["node", "./build/app.js"]

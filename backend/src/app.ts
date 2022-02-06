@@ -3,10 +3,19 @@ if ('production' !== process.env.NODE_ENV) {
     require('dotenv').config();
 }
 
+export const APP_CONFIG = {
+    APP_LOG_LEVEL: process.env.APP_LOG_LEVEL || 'debug',
+    APP_PORT: process.env.APP_PORT || '8080',
+    APP_CONTEXT_PATH: process.env.APP_CONTEXT_PATH || '/api/node-lab-backend',
+    DATABASE_URL: process.env.DATABASE_URL,
+    TOKEN_ISSUER: process.env.TOKEN_ISSUER || 'node-lab',
+    TOKEN_SECRET: process.env.TOKEN_SECRET,
+    TOKEN_EXPIRES_IN: process.env.TOKEN_EXPIRES_IN || '1800s'
+};
+
 // IMPORTS
 import express from 'express';
 import logger from './logger';
-import sequelize from './dao';
 import authRouter from './api/route/auth-route';
 import todoRouter from './api/route/todo-route';
 
@@ -26,7 +35,7 @@ app.use((req, res, next) => {
 
 // ROUTES
 const createRoute = (path: string) => {
-    return [process.env.APP_CONTEXT_PATH ? process.env.APP_CONTEXT_PATH : '', path].join('/');
+    return [APP_CONFIG.APP_CONTEXT_PATH ? APP_CONFIG.APP_CONTEXT_PATH : '', path].join('/');
 }
 
 // AUTH
@@ -46,13 +55,6 @@ app.use((req, res) => {
 });
 
 // START SERVER
-app.listen(process.env.APP_PORT, () => {
-    logger.debug(`Server running at port ${process.env.APP_PORT}.`);
+app.listen(APP_CONFIG.APP_PORT, () => {
+    logger.debug(`Server running at port ${APP_CONFIG.APP_PORT}.`);
 });
-
-sequelize.authenticate()
-    .then(() => logger.debug('Connection has been established successfully.'))
-    .catch(error => {
-        logger.error('Unable to connect to the database:', error);
-        process.exit(-1);
-    });

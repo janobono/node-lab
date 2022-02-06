@@ -1,6 +1,8 @@
 import jwt, { Jwt, VerifyCallback } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 
+import { APP_CONFIG } from './app';
+
 export interface Payload {
     username: string,
     firstName: string,
@@ -38,7 +40,7 @@ export const checkTokenHandler = (req: Request, res: Response, next: NextFunctio
     if (token == null) {
         return res.sendStatus(401);
     }
-    verifyToken(token, process.env.TOKEN_SECRET as string, (err, payload) => {
+    verifyToken(token, APP_CONFIG.TOKEN_SECRET as string, (err, payload) => {
         if (err) {
             return res.sendStatus(403);
         }
