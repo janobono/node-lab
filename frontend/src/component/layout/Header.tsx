@@ -1,28 +1,51 @@
 import React, { FunctionComponent, useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import { Box, Button, ButtonGroup, Container, Flex, Heading, HStack, Spacer, Stack, Text } from '@chakra-ui/react';
+
+import { ColorModeSwitcher } from '../../ColorModeSwitcher';
 import AuthContext from '../../context/auth-context';
-import Button from '../ui/Button';
 
 const Header: FunctionComponent = () => {
+    const navigate = useNavigate();
     const authCtx = useContext(AuthContext);
 
     return (
-        <React.Fragment>
-            <header className="w3-container w3-teal">
-                <h1>Todos</h1>
-            </header>
-            <nav className="w3-bar w3-black">
-                <NavLink to="/" className="w3-bar-item w3-button w3-green">Home</NavLink>
-                {authCtx.isLoggedIn ?
-                    <Button onClick={authCtx.onLogout}>Log out</Button>
-                    :
-                    <React.Fragment>
-                        <NavLink to="/sign-up" className="w3-bar-item w3-button">Sign up</NavLink>
-                        <NavLink to="/log-in" className="w3-bar-item w3-button">Log in</NavLink>
-                    </React.Fragment>
+        <header>
+            <Container maxW="container.sm" marginBottom="10">
+                <Flex>
+                    <Box p="2">
+                        <HStack spacing="24px">
+                            <ColorModeSwitcher justifySelf="flex-end"/>
+                            <Heading size="lg">Todo App</Heading>
+                        </HStack>
+                    </Box>
+                    <Spacer/>
+                    <Box p="2">
+                        {authCtx.isLoggedIn ?
+                            <Button colorScheme="teal" variant="outline" onClick={() => {
+                                authCtx.onLogout();
+                                navigate('/');
+                            }}>Log Out</Button>
+                            :
+                            <ButtonGroup mr="4">
+                                <Button colorScheme="teal" variant="solid" onClick={() => navigate('/sign-up')}>
+                                    Sign Up
+                                </Button>
+                                <Button colorScheme="teal" variant="outline" onClick={() => navigate('/log-in')}>
+                                    Log In
+                                </Button>
+                            </ButtonGroup>
+                        }
+                    </Box>
+                </Flex>
+                {authCtx.authResult &&
+                    <Stack>
+                        <Text>Welcome dear
+                            user <strong>{authCtx.authResult?.user.firstName} {authCtx.authResult?.user.lastName}</strong></Text>
+                    </Stack>
                 }
-            </nav>
-        </React.Fragment>
+            </Container>
+        </header>
     );
 }
 

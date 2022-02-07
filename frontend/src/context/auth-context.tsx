@@ -1,14 +1,29 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export interface AuthContextValue {
+    isLoading: boolean,
     isLoggedIn: boolean,
+    authResult: AuthResult | undefined,
     onLogout: () => void,
     onLogin: (username: string, password: string) => void
 }
 
+export interface User {
+    username: string,
+    firstName: string,
+    lastName: string,
+    email: string
+}
+
+export interface AuthResult {
+    user: User,
+    token: string
+}
+
 const AuthContext = React.createContext<AuthContextValue>({
+    isLoading: false,
     isLoggedIn: false,
+    authResult: undefined,
     onLogout: () => {
     },
     onLogin: (email, password) => {
@@ -16,9 +31,9 @@ const AuthContext = React.createContext<AuthContextValue>({
 });
 
 export const AuthContextProvider: FunctionComponent = (props) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    const navigate = useNavigate();
+    const [authResult, setAuthResult] = useState<AuthResult>();
 
     useEffect(() => {
         const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
@@ -27,27 +42,49 @@ export const AuthContextProvider: FunctionComponent = (props) => {
         }
     }, []);
 
-    const login = (username: string, password: string) => {
+    const login = async (username: string, password: string) => {
         console.log('AuthContextProvider.login');
-        // We should of course check email and password
-        // But it's just a dummy/ demo anyways
-        localStorage.setItem('isLoggedIn', '1');
-        setIsLoggedIn(true);
-        navigate('/');
+        try {
+            setIsLoading(true);
+            const response = await fetch('/api/node-lab-backend/auth/authenticate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username, password})
+            });
+            if (response.status === 200) {
+                const result: AuthResult = await response.json()
+                localStorage.setItem('isLoggedIn', '1');
+                localStorage.setItem('authResult', JSON.stringify(result));
+                setIsLoggedIn(true);
+                setAuthResult(result);
+            } else {
+                logout();
+            }
+        } catch (error) {
+            console.log(error);
+            logout();
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const logout = () => {
         console.log('AuthContextProvider.logout');
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('authResult');
         setIsLoggedIn(false);
-        navigate('/');
+        setAuthResult(undefined);
     };
 
     return (
         <AuthContext.Provider
             value={
                 {
-                    isLoggedIn: isLoggedIn,
+                    isLoading,
+                    isLoggedIn,
+                    authResult,
                     onLogout: logout,
                     onLogin: login
                 }

@@ -1,52 +1,100 @@
-import React, { FormEvent, FunctionComponent, useContext, useRef, useState } from 'react';
+import React, { FormEvent, FunctionComponent, useContext, useEffect, useRef, useState } from 'react';
 import AuthContext from '../context/auth-context';
-import Button from '../component/ui/Button';
+import { Badge, Box, Button, Container, Input, InputGroup, InputRightElement, Stack, Text } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
 
 const LoginPage: FunctionComponent = () => {
+    const navigate = useNavigate();
     const authCtx = useContext(AuthContext);
-
-    const usernameInput = useRef<HTMLInputElement>(null);
-    const passwordInput = useRef<HTMLInputElement>(null);
 
     const [usernameValid, setUsernameValid] = useState(true);
     const [passwordValid, setPasswordValid] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+    const [loginFailed, setLoginFailed] = useState(false);
+
+    const isValueValid = (value: string | undefined) => {
+        return value ? value.length > 0 : false;
+    }
 
     const loginHandler = (event: FormEvent) => {
         event.preventDefault();
-
-        const enteredUsername = usernameInput.current!.value.trim();
-        setUsernameValid(enteredUsername.length > 0);
-
-        const enteredPassword = passwordInput.current!.value.trim();
-        setPasswordValid(enteredPassword.length > 0);
-
-        if (enteredUsername.length > 0 && enteredPassword.length > 0) {
-            authCtx.onLogin(enteredUsername, enteredPassword);
+        const formData = event.target as typeof event.target & {
+            username: { value: string };
+            password: { value: string };
+        };
+        let isFormValid = true;
+        if (!isValueValid(formData.username.value)) {
+            isFormValid = false;
+            setUsernameValid(false);
+        }
+        if (!isValueValid(formData.password.value)) {
+            isFormValid = false;
+            setPasswordValid(false);
+        }
+        if (isFormValid) {
+            authCtx.onLogin(formData.username.value, formData.password.value);
         }
     }
 
-    return (
-        <article className="w3-container w3-padding">
-            <form onSubmit={loginHandler}>
-                <div>
-                    <label>Username</label>
-                    <div>
-                        <input type="text" id="username" ref={usernameInput}/>
-                    </div>
-                    {!usernameValid && <p>Invalid username!</p>}
-                </div>
+    const firstRun = useRef(true);
+    useEffect(() => {
+        if (firstRun.current) {
+            firstRun.current = false;
+            return;
+        }
+        if (authCtx.isLoading) {
+            return;
+        }
+        if (authCtx.isLoggedIn) {
+            setLoginFailed(false);
+            navigate('/');
+        } else {
+            setLoginFailed(true);
+        }
+    }, [authCtx.isLoading, authCtx.isLoggedIn]);
 
-                <div>
-                    <label>Password</label>
-                    <div>
-                        <input type="password" id="password" ref={passwordInput}/>
-                    </div>
-                    {!passwordValid && <p className="help is-danger">Invalid password!</p>}
-                </div>
-                <Button type={'submit'} className="w3-green"
-                        disabled={!usernameValid || !passwordValid}>Login</Button>
+    return (
+        <Container maxW="container.sm">
+            <form onSubmit={loginHandler}>
+                <Stack spacing="4">
+                    <Box>
+                        <Text align="left">Username</Text>
+                        <Input name="username"
+                               onChange={(event) => setUsernameValid(isValueValid(event.target.value))}
+                               onBlur={(event) => {
+                                   if (!event.currentTarget.contains(event.relatedTarget)) {
+                                       setUsernameValid(isValueValid(event.target.value))
+                                   }
+                               }}
+                        />
+                        {!usernameValid && <Badge colorScheme="red">Invalid username!</Badge>}
+                    </Box>
+
+                    <Box>
+                        <Text>Password</Text>
+                        <InputGroup>
+                            <Input type={showPassword ? 'text' : 'password'} name="password"
+                                   onChange={(event) => setPasswordValid(isValueValid(event.target.value))}
+                                   onBlur={(event) => {
+                                       if (!event.currentTarget.contains(event.relatedTarget)) {
+                                           setPasswordValid(isValueValid(event.target.value))
+                                       }
+                                   }}
+                            />
+                            <InputRightElement>
+                                <Button onClick={() => setShowPassword(!showPassword)}>
+                                    {showPassword ? 'Hide' : 'Show'}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                        {!passwordValid && <Badge colorScheme="red">Invalid password!</Badge>}
+                    </Box>
+
+                    <Button type="submit" disabled={!usernameValid || !passwordValid}>Login</Button>
+                    {loginFailed && <Badge colorScheme="red">Invalid username or password!</Badge>}
+                </Stack>
             </form>
-        </article>
+        </Container>
     );
 };
 

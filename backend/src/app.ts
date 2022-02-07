@@ -3,6 +3,7 @@ if ('production' !== process.env.NODE_ENV) {
     require('dotenv').config();
 }
 
+// CONFIG
 export const APP_CONFIG = {
     APP_LOG_LEVEL: process.env.APP_LOG_LEVEL || 'debug',
     APP_PORT: process.env.APP_PORT || '8080',
@@ -21,11 +22,9 @@ import todoRouter from './api/route/todo-route';
 
 // APP
 const app = express();
-
-// JSON PARSER
+// - JSON PARSER
 app.use(express.json());
-
-// CORS
+// - CORS
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
@@ -37,19 +36,15 @@ app.use((req, res, next) => {
 const createRoute = (path: string) => {
     return [APP_CONFIG.APP_CONTEXT_PATH ? APP_CONFIG.APP_CONTEXT_PATH : '', path].join('/');
 }
-
-// AUTH
+// - AUTH
 app.use(createRoute('auth'), authRouter);
-
-// TODOS
+// - TODOS
 app.use(createRoute('todos'), todoRouter);
-
-// HEALTH
+// - HEALTH
 app.get(createRoute('health'), (req, res) => {
     res.status(200).end('OK');
 });
-
-// 404
+// - 404
 app.use((req, res) => {
     res.sendStatus(404);
 });

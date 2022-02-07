@@ -1,15 +1,17 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Badge, Container, Link, Stack, Text } from '@chakra-ui/react';
 
 const Footer: FunctionComponent = () => {
     const [health, setHealth] = useState(false);
 
-    const healthHandler = () => {
-        fetch('/api/node-lab-backend/health')
-            .then(
-                result => {
-                    setHealth(result.status === 200);
-                }
-            );
+    const healthHandler = async () => {
+        try {
+            const result = await fetch('/api/node-lab-backend/health');
+            setHealth(result.status === 200);
+        } catch (error) {
+            console.log(error);
+            setHealth(false);
+        }
     }
 
     useEffect(() => {
@@ -17,15 +19,20 @@ const Footer: FunctionComponent = () => {
     }, []);
 
     return (
-        <footer className="w3-container w3-gray w3-center w3-padding">
-            <div>
-                <p>
-                    <strong>Node Lab</strong> by <a href="https://www.janobono.com/">janobono</a>. The source code is
-                    free.
-                </p>
-                {health ? <span onClick={healthHandler} className="w3-tag w3-green">Backend healthy</span> :
-                    <span onClick={healthHandler} className="w3-tag w3-red">Backend Error</span>}
-            </div>
+        <footer>
+            <Container maxW="container.sm" marginTop='10'>
+                <Stack>
+                    <Text align="center"><strong>Node Lab</strong> by <Link
+                        href="https://www.janobono.com/" isExternal>janobono</Link>.
+                        The
+                        source code is free.
+                        {health
+                            ? <Badge colorScheme="green">Backend healthy</Badge>
+                            : <Badge colorScheme="red">Backend Error</Badge>
+                        }
+                    </Text>
+                </Stack>
+            </Container>
         </footer>
     );
 };
