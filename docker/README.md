@@ -2,10 +2,16 @@
 
 `docker-compose` config for local running. All projects have to be built.
 
-## start
+## run all
 
 ```
-docker-compose up
+docker-compose up -d
+```
+
+## run just db
+
+```
+docker-compose -f docker-compose-database-only.yaml up -d
 ```
 
 ## stop

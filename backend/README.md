@@ -44,15 +44,12 @@ For development purposes use `.env` file. In production set environment variable
 
 ## dev
 
-- token can be generated via `yarn new-token`
-- `.env` file is needed
-
-```
-DATABASE_URL="postgresql://app:app@localhost:5432/app?schema=public"
-TOKEN_SECRET=b0bb3ad766eda5bb6ac1e9af603c99cda01f05865048c858a92bbbdb9b2f72b72d6ae7ed0b707e30177e1708708ad73bfbf32499966a36300787b989333ee424
-```
-
-- dev server started `yarn dev`
+- Look in docker directory and start just db.
+- Create `.env` file set:
+    - `DATABASE_URL="postgresql://app:app@localhost:5432/app?schema=public"`
+    - `TOKEN_SECRET=b0bb3ad766eda5bb6ac1e9af603c99cda01f05865048c858a92bbbdb9b2f72b72d6ae7ed0b707e30177e1708708ad73bfbf32499966a36300787b989333ee424`
+        - Generate token `yarn new-token`
+- Start dev server `yarn dev`
 
 ### health check
 

@@ -1,9 +1,23 @@
 import React, { FunctionComponent, useContext } from 'react';
 import { useNavigate } from 'react-router';
-import { Box, Button, ButtonGroup, Container, Flex, Heading, HStack, Spacer, Stack, Text } from '@chakra-ui/react';
+import { FaHome } from 'react-icons/fa';
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Container,
+    Flex,
+    Heading,
+    HStack,
+    Icon,
+    IconButton,
+    Spacer,
+    Stack,
+    Text
+} from '@chakra-ui/react';
 
 import { ColorModeSwitcher } from '../../ColorModeSwitcher';
-import AuthContext from '../../context/auth-context';
+import AuthContext from '../../contexts/auth-context';
 
 const Header: FunctionComponent = () => {
     const navigate = useNavigate();
@@ -13,6 +27,14 @@ const Header: FunctionComponent = () => {
         <header>
             <Container maxW="container.sm" marginBottom="10">
                 <Flex>
+                    <Box p="2">
+                        <IconButton
+                            colorScheme="teal"
+                            aria-label="Home"
+                            icon={<Icon as={FaHome}/>}
+                            onClick={() => navigate('/')}
+                        />
+                    </Box>
                     <Box p="2">
                         <HStack spacing="24px">
                             <ColorModeSwitcher justifySelf="flex-end"/>

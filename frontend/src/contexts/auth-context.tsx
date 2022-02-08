@@ -6,6 +6,7 @@ export interface AuthContextValue {
     authResult: AuthResult | undefined,
     onLogout: () => void,
     onLogin: (username: string, password: string) => void
+    onSignUp: (user: User, password: string) => void
 }
 
 export interface User {
@@ -27,6 +28,8 @@ const AuthContext = React.createContext<AuthContextValue>({
     onLogout: () => {
     },
     onLogin: (email, password) => {
+    },
+    onSignUp: (user, password) => {
     }
 });
 
@@ -42,36 +45,64 @@ export const AuthContextProvider: FunctionComponent = (props) => {
         }
     }, []);
 
+    const onAuthResponse = async (response: Response) => {
+        if (response.status === 200 || response.status === 201) {
+            const result: AuthResult = await response.json();
+            localStorage.setItem('isLoggedIn', '1');
+            localStorage.setItem('authResult', JSON.stringify(result));
+            setIsLoggedIn(true);
+            setAuthResult(result);
+        } else {
+            throw new Error('Wrong response status!');
+        }
+    }
+
+    const onAuthError = (error: any) => {
+        console.log(error);
+        logout();
+    }
+
     const login = async (username: string, password: string) => {
-        console.log('AuthContextProvider.login');
+        setIsLoading(true);
         try {
-            setIsLoading(true);
-            const response = await fetch('/api/node-lab-backend/auth/authenticate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({username, password})
-            });
-            if (response.status === 200) {
-                const result: AuthResult = await response.json()
-                localStorage.setItem('isLoggedIn', '1');
-                localStorage.setItem('authResult', JSON.stringify(result));
-                setIsLoggedIn(true);
-                setAuthResult(result);
-            } else {
-                logout();
-            }
+            const response = await fetch(
+                '/api/node-lab-backend/auth/authenticate',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username, password})
+                });
+            await onAuthResponse(response);
         } catch (error) {
-            console.log(error);
-            logout();
+            onAuthError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const signUp = async (user: User, password: string) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(
+                '/api/node-lab-backend/auth/sign-in',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({...user, password})
+                });
+            await onAuthResponse(response);
+        } catch (error) {
+            onAuthError(error);
         } finally {
             setIsLoading(false);
         }
     };
 
     const logout = () => {
-        console.log('AuthContextProvider.logout');
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('authResult');
         setIsLoggedIn(false);
@@ -86,7 +117,8 @@ export const AuthContextProvider: FunctionComponent = (props) => {
                     isLoggedIn,
                     authResult,
                     onLogout: logout,
-                    onLogin: login
+                    onLogin: login,
+                    onSignUp: signUp
                 }
             }
         >{props.children}
