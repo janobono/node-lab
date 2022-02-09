@@ -3,8 +3,10 @@ FROM node:16-alpine as deps
 
 WORKDIR /app
 
+ADD ./prisma ./prisma
 ADD package.json package-lock.json ./
 RUN npm install --production=false
+RUN npx prisma generate
 
 # Setup production node_modules
 FROM node:16-alpine as production-deps
