@@ -14,6 +14,7 @@ export const getTodos = async (req: Request, res: Response, next: NextFunction) 
         });
         res.status(200).json(todos);
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }
@@ -27,6 +28,7 @@ export const getTodo = async (req: Request, res: Response, next: NextFunction) =
         });
         res.status(200).json(todo);
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }
@@ -48,6 +50,7 @@ export const addTodo = async (req: Request, res: Response, next: NextFunction) =
         });
         res.status(201).json(todo);
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }
@@ -71,6 +74,7 @@ export const setTodo = async (req: Request, res: Response, next: NextFunction) =
         });
         res.status(200).json(todo);
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }
@@ -84,6 +88,7 @@ export const deleteTodo = async (req: Request, res: Response, next: NextFunction
         });
         res.status(200).json(todo);
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }

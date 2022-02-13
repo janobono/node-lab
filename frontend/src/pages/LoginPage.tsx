@@ -12,16 +12,15 @@ const LoginPage: FunctionComponent = () => {
     const [usernameNotValid, setUsernameNotValid] = useState(false);
     const [passwordNotValid, setPasswordNotValid] = useState(false);
 
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
     const [loginFailed, setLoginFailed] = useState(false);
 
     const loginHandler = (event: FormEvent) => {
         event.preventDefault();
-        const formData = event.target as typeof event.target & {
-            username: { value: string };
-            password: { value: string };
-        };
-        if (formData.username.value.length > 0 && formData.password.value.length > 0) {
-            authCtx.onLogin(formData.username.value, formData.password.value);
+        if (!usernameNotValid && !passwordNotValid) {
+            authCtx.onLogin(username, password);
         }
     }
 
@@ -31,16 +30,13 @@ const LoginPage: FunctionComponent = () => {
             firstRun.current = false;
             return;
         }
-        if (authCtx.isLoading) {
-            return;
-        }
-        if (authCtx.isLoggedIn) {
+        if (authCtx.payload) {
             setLoginFailed(false);
             navigate('/');
         } else {
             setLoginFailed(true);
         }
-    }, [authCtx.isLoading, authCtx.isLoggedIn, navigate]);
+    }, [authCtx.payload, navigate]);
 
     return (
         <Container maxW="container.sm">
@@ -50,6 +46,8 @@ const LoginPage: FunctionComponent = () => {
                         name="username"
                         label="Username"
                         isRequired={true}
+                        value={username}
+                        setValue={setUsername}
                         notValid={usernameNotValid}
                         setNotValid={setUsernameNotValid}
                         isNotValid={value => value.length === 0}
@@ -60,6 +58,8 @@ const LoginPage: FunctionComponent = () => {
                         name="password"
                         label="Password"
                         isRequired={true}
+                        value={password}
+                        setValue={setPassword}
                         notValid={passwordNotValid}
                         setNotValid={setPasswordNotValid}
                         isNotValid={value => value.length === 0}

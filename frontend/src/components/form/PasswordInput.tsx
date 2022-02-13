@@ -11,15 +11,13 @@ import {
 import InputProps from './input-props';
 
 const PasswordInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = (props) => {
-    const [notValid, setNotValid] = useState(false);
-    const [value, setValue] = useState(props.value ? props.value : '');
     const [showPassword, setShowPassword] = useState(false);
 
     const revalidate = useCallback(() => {
             if (props.isNotValid) {
-                setNotValid(props.isNotValid(value));
+                props.setNotValid(props.isNotValid(props.value));
             }
-        }, [props, value]
+        }, [props.setNotValid, props.value]
     );
 
     const firstRun = useRef(true);
@@ -31,21 +29,21 @@ const PasswordInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = 
             }
             revalidate();
         },
-        [revalidate, value]
+        [props.value, revalidate]
     );
 
     return (
         <FormControl
             isRequired={props.isRequired}
-            isInvalid={notValid}
+            isInvalid={props.notValid}
         >
             <FormLabel htmlFor={props.label}>{props.label}</FormLabel>
             <InputGroup>
                 <Input type={showPassword ? 'text' : 'password'}
                        id={props.name}
                        name={props.name}
-                       value={value}
-                       onChange={event => setValue(event.target.value)}
+                       value={props.value}
+                       onChange={event => props.setValue(event.target.value)}
                        onBlur={(event) => {
                            if (!event.currentTarget.contains(event.relatedTarget)) {
                                revalidate();
@@ -58,7 +56,7 @@ const PasswordInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = 
                     </Button>
                 </InputRightElement>
             </InputGroup>
-            {notValid && props.formErrorMessage && <FormErrorMessage>{props.formErrorMessage}</FormErrorMessage>}
+            {props.notValid && props.formErrorMessage && <FormErrorMessage>{props.formErrorMessage}</FormErrorMessage>}
         </FormControl>
     );
 };

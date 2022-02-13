@@ -13,16 +13,13 @@ const TodoForm: FunctionComponent<PropsWithChildren<TodoFormProps>> = (props) =>
     const [titleNotValid, setTitleNotValid] = useState(false);
     const [contentNotValid, setContentNotValid] = useState(false);
 
+    const [title, setTitle] = useState(props.title ? props.title : '');
     const [content, setContent] = useState(props.content ? props.content : '');
 
     const submitHandler = (event: FormEvent) => {
         event.preventDefault();
-        const formData = event.target as typeof event.target & {
-            title: { value: string };
-            content: { value: string };
-        };
-        if (formData.title.value.length > 0 && formData.content.value.length > 0) {
-            props.onSubmit(formData.title.value, formData.content.value);
+        if (!titleNotValid && !contentNotValid) {
+            props.onSubmit(title, content);
         }
     }
 
@@ -33,7 +30,8 @@ const TodoForm: FunctionComponent<PropsWithChildren<TodoFormProps>> = (props) =>
                     name="title"
                     label="Title"
                     isRequired={true}
-                    value={props.title ? props.title : ''}
+                    value={title}
+                    setValue={setTitle}
                     notValid={titleNotValid}
                     setNotValid={setTitleNotValid}
                     isNotValid={value => value.length === 0}

@@ -1,69 +1,86 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import jwt_decode from 'jwt-decode';
 
-export interface AuthContextValue {
-    isLoading: boolean,
-    isLoggedIn: boolean,
-    authResult: AuthResult | undefined,
-    onLogout: () => void,
-    onLogin: (username: string, password: string) => void
-    onSignUp: (user: User, password: string) => void
-}
-
-export interface User {
+interface TokenPayload {
+    exp: number,
+    iat: number,
+    iss: string,
     username: string,
     firstName: string,
     lastName: string,
     email: string
 }
 
-export interface AuthResult {
-    user: User,
-    token: string
+export interface Payload {
+    exp: Date,
+    iat: Date,
+    iss: string,
+    username: string,
+    firstName: string,
+    lastName: string,
+    email: string
+}
+
+export interface SignUpFormData {
+    username: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    email: string
+}
+
+export interface AuthContextValue {
+    bearer: String | undefined,
+    payload: Payload | undefined,
+    onLogout: () => void,
+    onLogin: (username: string, password: string) => Promise<number>
+    onSignUp: (signUpFormData: SignUpFormData) => Promise<number>
 }
 
 const AuthContext = React.createContext<AuthContextValue>({
-    isLoading: false,
-    isLoggedIn: false,
-    authResult: undefined,
+    bearer: undefined,
+    payload: undefined,
     onLogout: () => {
     },
-    onLogin: (email, password) => {
+    onLogin: async (email, password) => {
+        return 500;
     },
-    onSignUp: (user, password) => {
+    onSignUp: async (signUpFormData: SignUpFormData) => {
+        return 500;
     }
 });
 
 export const AuthContextProvider: FunctionComponent = (props) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [authResult, setAuthResult] = useState<AuthResult>();
+    const [bearer, setBearer] = useState<String>();
+    const [payload, setPayload] = useState<Payload>();
+
+    const decodeToken = (token: string) => {
+        const decodedPayload = jwt_decode<TokenPayload>(token);
+        if (decodedPayload) {
+            if (decodedPayload.exp * 1000 > Date.now()) {
+                localStorage.setItem('token', token);
+                setBearer(token);
+                setPayload({
+                    exp: new Date(decodedPayload.exp * 1000),
+                    iat: new Date(decodedPayload.iat * 1000),
+                    iss: decodedPayload.iss,
+                    username: decodedPayload.username,
+                    firstName: decodedPayload.firstName,
+                    lastName: decodedPayload.lastName,
+                    email: decodedPayload.email
+                })
+            }
+        }
+    }
 
     useEffect(() => {
-        const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
-        if (storedUserLoggedInInformation === '1') {
-            setIsLoggedIn(true);
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            decodeToken(storedToken);
         }
     }, []);
 
-    const onAuthResponse = async (response: Response) => {
-        if (response.status === 200 || response.status === 201) {
-            const result: AuthResult = await response.json();
-            localStorage.setItem('isLoggedIn', '1');
-            localStorage.setItem('authResult', JSON.stringify(result));
-            setIsLoggedIn(true);
-            setAuthResult(result);
-        } else {
-            throw new Error('Wrong response status!');
-        }
-    }
-
-    const onAuthError = (error: any) => {
-        console.log(error);
-        logout();
-    }
-
     const login = async (username: string, password: string) => {
-        setIsLoading(true);
         try {
             const response = await fetch(
                 '/api/node-lab-backend/auth/authenticate',
@@ -74,16 +91,19 @@ export const AuthContextProvider: FunctionComponent = (props) => {
                     },
                     body: JSON.stringify({username, password})
                 });
-            await onAuthResponse(response);
+            if (response.status === 200) {
+                const {bearer} = await response.json();
+                decodeToken(bearer);
+            }
+            return response.status;
         } catch (error) {
-            onAuthError(error);
-        } finally {
-            setIsLoading(false);
+            console.log(error);
+            logout();
         }
+        return 500;
     };
 
-    const signUp = async (user: User, password: string) => {
-        setIsLoading(true);
+    const signUp = async (signUpFormData: SignUpFormData) => {
         try {
             const response = await fetch(
                 '/api/node-lab-backend/auth/sign-in',
@@ -92,30 +112,32 @@ export const AuthContextProvider: FunctionComponent = (props) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({...user, password})
+                    body: JSON.stringify({...signUpFormData})
                 });
-            await onAuthResponse(response);
+            if (response.status === 201) {
+                const {bearer} = await response.json();
+                decodeToken(bearer);
+            }
+            return response.status;
         } catch (error) {
-            onAuthError(error);
-        } finally {
-            setIsLoading(false);
+            console.log(error);
+            logout();
         }
+        return 500;
     };
 
     const logout = () => {
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('authResult');
-        setIsLoggedIn(false);
-        setAuthResult(undefined);
+        localStorage.removeItem('token')
+        setBearer(undefined);
+        setPayload(undefined);
     };
 
     return (
         <AuthContext.Provider
             value={
                 {
-                    isLoading,
-                    isLoggedIn,
-                    authResult,
+                    bearer,
+                    payload,
                     onLogout: logout,
                     onLogin: login,
                     onSignUp: signUp

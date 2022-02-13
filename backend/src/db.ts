@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import logger from './logger';
 
 let db: PrismaClient;
 
@@ -21,3 +22,14 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export { db };
+
+export const dbCheck = async () => {
+    try {
+        await db.nl_user.findFirst();
+        await db.nl_todo.findFirst();
+    } catch (error) {
+        logger.error(error);
+        return false;
+    }
+    return true;
+}

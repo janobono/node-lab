@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext, useState } from 'react';
+import React, { FunctionComponent, useContext } from 'react';
 import AuthContext from './auth-context';
 
 export interface Todo {
@@ -8,16 +8,14 @@ export interface Todo {
 }
 
 export interface TodoContextValue {
-    isLoading: boolean,
     getAllTodos: () => Promise<Todo[]>,
     getTodo: (id: number) => Promise<Todo | undefined>,
-    addTodo: (todo: Todo) => void,
-    setTodo: (todo: Todo) => void,
-    deleteTodo: (id: number) => void
+    addTodo: (todo: Todo) => Promise<Todo | undefined>,
+    setTodo: (todo: Todo) => Promise<Todo | undefined>,
+    deleteTodo: (id: number) => Promise<Todo | undefined>
 }
 
 const TodoContext = React.createContext<TodoContextValue>({
-    isLoading: false,
     getAllTodos: async () => {
         return [];
     },
@@ -25,39 +23,37 @@ const TodoContext = React.createContext<TodoContextValue>({
         return undefined;
     },
     addTodo: async (todo) => {
+        return undefined;
     },
     setTodo: async (todo) => {
+        return undefined;
     },
     deleteTodo: async (id) => {
+        return undefined;
     }
 });
 
 export const TodoContextProvider: FunctionComponent = (props) => {
     const authCtx = useContext(AuthContext);
-    const [isLoading, setIsLoading] = useState(false);
 
     const getAllTodos = async () => {
-        setIsLoading(true);
         try {
             const response = await fetch('/api/node-lab-backend/todos');
             return await response.json();
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false);
         }
         return [];
     }
 
     const getTodo = async (id: number) => {
-        setIsLoading(true);
         try {
             const response = await fetch(
                 '/api/node-lab-backend/todos/' + id,
                 {
                     method: 'GET',
                     headers: {
-                        'Authorization': 'Bearer ' + authCtx.authResult?.token
+                        'Authorization': 'Bearer ' + authCtx.bearer
                     }
                 });
             if (response.status === 200) {
@@ -66,80 +62,78 @@ export const TodoContextProvider: FunctionComponent = (props) => {
             }
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false);
         }
+        return undefined;
     }
 
     const addTodo = async (todo: Todo) => {
-        setIsLoading(true);
         try {
             const response = await fetch(
                 '/api/node-lab-backend/todos',
                 {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer ' + authCtx.authResult?.token,
+                        'Authorization': 'Bearer ' + authCtx.bearer,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({...todo})
                 });
-            const result: Todo = await response.json();
-            console.log(result);
+            if (response.status === 200) {
+                const result: Todo = await response.json();
+                return result;
+            }
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false);
         }
+        return undefined;
     }
 
     const setTodo = async (todo: Todo) => {
-        setIsLoading(true);
         try {
             const response = await fetch(
                 '/api/node-lab-backend/todos/' + todo.id,
                 {
                     method: 'PUT',
                     headers: {
-                        'Authorization': 'Bearer ' + authCtx.authResult?.token,
+                        'Authorization': 'Bearer ' + authCtx.bearer,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({...todo})
                 });
-            const result: Todo = await response.json();
-            console.log(result);
+            if (response.status === 200) {
+                const result: Todo = await response.json();
+                return result;
+            }
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false);
         }
+        return undefined;
     }
 
     const deleteTodo = async (id: number) => {
-        setIsLoading(true);
         try {
             const response = await fetch(
                 '/api/node-lab-backend/todos/' + id,
                 {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': 'Bearer ' + authCtx.authResult?.token
+                        'Authorization': 'Bearer ' + authCtx.bearer
                     }
                 });
-            const result: Todo = await response.json();
-            console.log(result);
+            if (response.status === 200) {
+                const result: Todo = await response.json();
+                return result;
+            }
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false);
         }
+        return undefined;
     }
 
     return (
         <TodoContext.Provider
             value={
                 {
-                    isLoading,
                     getAllTodos,
                     getTodo,
                     addTodo,

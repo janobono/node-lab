@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
-import { APP_CONFIG } from '../../app';
+import APP_CONFIG from '../../config';
 import { db } from '../../db';
 import logger from '../../logger';
 import { hashPassword, verifyPassword } from '../../password';
 import { generateToken } from '../../jwt';
 
 export const signIn = async (req: Request, res: Response, next: NextFunction) => {
-    logger.debug('signIn', req.body);
+    logger.debug('signIn');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(400).json({errors: errors.array()});
@@ -46,17 +46,18 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
                     expiresIn: APP_CONFIG.TOKEN_EXPIRES_IN
                 }
             );
-            res.status(201).json({user: result, token});
+            res.status(201).json({bearer: token});
         } else {
             res.status(400).end(`User ${username} is already exists!`);
         }
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
-    logger.debug('authenticate', req.body);
+    logger.debug('authenticate');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(400).json({errors: errors.array()});
@@ -83,7 +84,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
                         expiresIn: APP_CONFIG.TOKEN_EXPIRES_IN!
                     }
                 );
-                res.status(200).json({user: result, token});
+                res.status(200).json({bearer: token});
             } else {
                 res.status(400).json({message: 'Invalid password!'});
             }
@@ -91,6 +92,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
             res.status(400).json({message: 'Invalid username!'});
         }
     } catch (error) {
+        logger.error(error);
         res.status(500).json(error);
     }
 }

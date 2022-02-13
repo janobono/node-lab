@@ -1,24 +1,25 @@
 // DEVELOPMENT ENV
-if ('production' !== process.env.NODE_ENV) {
-    require('dotenv').config();
-}
-
-// CONFIG
-export const APP_CONFIG = {
-    APP_LOG_LEVEL: process.env.APP_LOG_LEVEL || 'debug',
-    APP_PORT: process.env.APP_PORT || '8080',
-    APP_CONTEXT_PATH: process.env.APP_CONTEXT_PATH || '/api/node-lab-backend',
-    DATABASE_URL: process.env.DATABASE_URL,
-    TOKEN_ISSUER: process.env.TOKEN_ISSUER || 'node-lab',
-    TOKEN_SECRET: process.env.TOKEN_SECRET,
-    TOKEN_EXPIRES_IN: process.env.TOKEN_EXPIRES_IN || '1800s'
-};
+import APP_CONFIG from './config';
 
 // IMPORTS
 import express from 'express';
 import logger from './logger';
+import { dbCheck } from './db';
 import authRouter from './api/route/auth-route';
 import todoRouter from './api/route/todo-route';
+
+logger.info('Server initialization...');
+
+// DB
+logger.info('DB check...');
+dbCheck().then(result => {
+    if (result) {
+        logger.info('Db check OK')
+    } else {
+        logger.warn('Db check ERR')
+        throw new Error('Db err');
+    }
+});
 
 // APP
 const app = express();
@@ -50,6 +51,12 @@ app.use((req, res) => {
 });
 
 // START SERVER
-app.listen(APP_CONFIG.APP_PORT, () => {
-    logger.debug(`Server running at port ${APP_CONFIG.APP_PORT}.`);
+const server = app.listen(APP_CONFIG.APP_PORT, () => {
+    logger.info(`Server running at port ${APP_CONFIG.APP_PORT}.`);
 });
+process.on('SIGTERM', () => {
+    logger.debug('SIGTERM signal received: closing HTTP server')
+    server.close(() => {
+        logger.debug('Server closed')
+    })
+})

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect, useRef } from 'react';
 import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
 import InputProps from './input-props';
 
@@ -7,15 +7,12 @@ export const isEmailValid = (email: string) => {
 }
 
 const EmailInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = (props) => {
-    const notValid = props.notValid;
-    const setNotValid = props.setNotValid;
-    const [value, setValue] = useState(props.value ? props.value : '@');
 
     const revalidate = useCallback(() => {
             if (props.isNotValid) {
-                setNotValid(props.isNotValid(value));
+                props.setNotValid(props.isNotValid(props.value));
             }
-        }, [setNotValid, props, value]
+        }, [props.setNotValid, props.value]
     );
 
     const firstRun = useRef(true);
@@ -27,28 +24,28 @@ const EmailInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = (pr
             }
             revalidate();
         },
-        [value, revalidate]
+        [props.value, revalidate]
     );
 
     return (
         <FormControl
             isRequired={props.isRequired}
-            isInvalid={notValid}
+            isInvalid={props.notValid}
         >
             <FormLabel htmlFor={props.label}>{props.label}</FormLabel>
             <Input
                 type="email"
                 id={props.name}
                 name={props.name}
-                value={value}
-                onChange={event => setValue(event.target.value)}
+                value={props.value}
+                onChange={event => props.setValue(event.target.value)}
                 onBlur={(event) => {
                     if (!event.currentTarget.contains(event.relatedTarget)) {
                         revalidate();
                     }
                 }}
             />
-            {notValid && props.formErrorMessage && <FormErrorMessage>{props.formErrorMessage}</FormErrorMessage>}
+            {props.notValid && props.formErrorMessage && <FormErrorMessage>{props.formErrorMessage}</FormErrorMessage>}
         </FormControl>
     );
 };

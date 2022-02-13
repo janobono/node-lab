@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useContext } from 'react';
 import { useNavigate } from 'react-router';
-import { Center, Container, Spinner } from '@chakra-ui/react';
+import { Container } from '@chakra-ui/react';
 
 import TodoContext from '../contexts/todo-context';
 import TodoForm from '../components/form/TodoForm';
@@ -16,10 +16,7 @@ const NewTodoPage: FunctionComponent = () => {
 
     return (
         <Container maxW="container.sm">
-            {todoCtx.isLoading
-                ? <Center><Spinner/></Center>
-                : <TodoForm submitButtonLabel="Add" onSubmit={addTodo}/>
-            }
+            <TodoForm submitButtonLabel="Add" onSubmit={addTodo}/>
         </Container>
     );
 };

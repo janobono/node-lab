@@ -17,39 +17,39 @@ const SignUpPage: FunctionComponent = () => {
     const [passwordNotValid, setPasswordNotValid] = useState(false);
     const [passwordConfirmationNotValid, setPasswordConfirmationNotValid] = useState(false);
 
+    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('@');
+    const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+
     const [passwordNotConfirmed, setPasswordNotConfirmed] = useState(false);
     const [signUpFailed, setSignUpFailed] = useState(false);
 
     const signInHandler = (event: FormEvent) => {
         event.preventDefault();
-        const formData = event.target as typeof event.target & {
-            username: { value: string };
-            firstName: { value: string };
-            lastName: { value: string };
-            email: { value: string };
-            password: { value: string };
-            passwordConfirmation: { value: string };
-        };
-        const isFormValid =
-            formData.username.value.length > 0 &&
-            formData.firstName.value.length > 0 &&
-            formData.lastName.value.length > 0 &&
-            formData.email.value.length > 0 && isEmailValid(formData.email.value) &&
-            formData.password.value.length > 0 &&
-            formData.passwordConfirmation.value.length > 0 &&
-            formData.password.value === formData.passwordConfirmation.value;
-        if (isFormValid) {
+        if (!usernameNotValid &&
+            !firstNameNotValid &&
+            !lastNameNotValid &&
+            !emailNotValid &&
+            !passwordNotValid &&
+            !passwordConfirmationNotValid) {
+
+            if (password !== passwordConfirmation) {
+                setPasswordNotConfirmed(true);
+                return;
+            }
+
             authCtx.onSignUp(
                 {
-                    username: formData.username.value,
-                    firstName: formData.firstName.value,
-                    lastName: formData.lastName.value,
-                    email: formData.email.value
-                },
-                formData.password.value
+                    username,
+                    password,
+                    firstName,
+                    lastName,
+                    email
+                }
             );
-        } else {
-            setPasswordNotConfirmed(formData.password.value !== formData.passwordConfirmation.value);
         }
     }
 
@@ -59,16 +59,13 @@ const SignUpPage: FunctionComponent = () => {
             firstRun.current = false;
             return;
         }
-        if (authCtx.isLoading) {
-            return;
-        }
-        if (authCtx.isLoggedIn) {
+        if (authCtx.payload) {
             setSignUpFailed(false);
             navigate('/');
         } else {
             setSignUpFailed(true);
         }
-    }, [authCtx.isLoading, authCtx.isLoggedIn, navigate]);
+    }, [authCtx.payload, navigate]);
 
     return (
         <Container maxW="container.sm">
@@ -78,6 +75,8 @@ const SignUpPage: FunctionComponent = () => {
                         name="username"
                         label="Username"
                         isRequired={true}
+                        value={username}
+                        setValue={setUsername}
                         notValid={usernameNotValid}
                         setNotValid={setUsernameNotValid}
                         isNotValid={value => value.length === 0}
@@ -88,6 +87,8 @@ const SignUpPage: FunctionComponent = () => {
                         name="firstName"
                         label="First name"
                         isRequired={true}
+                        value={firstName}
+                        setValue={setFirstName}
                         notValid={firstNameNotValid}
                         setNotValid={setFirstNameNotValid}
                         isNotValid={value => value.length === 0}
@@ -98,6 +99,8 @@ const SignUpPage: FunctionComponent = () => {
                         name="lastName"
                         label="Last name"
                         isRequired={true}
+                        value={lastName}
+                        setValue={setLastName}
                         notValid={lastNameNotValid}
                         setNotValid={setLastNameNotValid}
                         isNotValid={value => value.length === 0}
@@ -108,6 +111,8 @@ const SignUpPage: FunctionComponent = () => {
                         name="email"
                         label="Email address"
                         isRequired={true}
+                        value={email}
+                        setValue={setEmail}
                         notValid={emailNotValid}
                         setNotValid={setEmailNotValid}
                         isNotValid={value => value.length === 0 || !isEmailValid(value)}
@@ -118,6 +123,8 @@ const SignUpPage: FunctionComponent = () => {
                         name="password"
                         label="Password"
                         isRequired={true}
+                        value={password}
+                        setValue={setPassword}
                         notValid={passwordNotValid}
                         setNotValid={setPasswordNotValid}
                         isNotValid={value => value.length === 0}
@@ -128,6 +135,8 @@ const SignUpPage: FunctionComponent = () => {
                         name="passwordConfirmation"
                         label="Password confirmation"
                         isRequired={true}
+                        value={passwordConfirmation}
+                        setValue={setPasswordConfirmation}
                         notValid={passwordConfirmationNotValid}
                         setNotValid={setPasswordConfirmationNotValid}
                         isNotValid={value => value.length === 0}

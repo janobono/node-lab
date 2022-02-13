@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import {
     Box,
     Button,
-    Center,
     Container,
     HStack,
     Icon,
@@ -15,7 +14,6 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Spinner,
     Stack,
     Table,
     TableCaption,
@@ -58,60 +56,57 @@ const HomePage: FunctionComponent = () => {
 
     return (
         <Container maxW="container.sm">
-            {todoCtx.isLoading && <Center><Spinner/></Center>}
-            {!todoCtx.isLoading &&
-                <Stack>
-                    <Table variant="striped" colorScheme="teal">
-                        <TableCaption>All Todos</TableCaption>
-                        <Thead>
-                            <Tr>
-                                <Th>id</Th>
-                                <Th>title</Th>
-                                <Th>content</Th>
-                                {authCtx.isLoggedIn &&
-                                    <Th/>
-                                }
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {todos.map(todo =>
-                                <Tr key={todo.id}>
-                                    <Td>{todo.id}</Td>
-                                    <Td>{todo.title}</Td>
-                                    <Td>{todo.content}</Td>
-                                    {authCtx.isLoggedIn &&
-                                        <Td><HStack>
-                                            <IconButton
-                                                colorScheme="teal"
-                                                aria-label="Edit todo"
-                                                icon={<Icon as={FaEdit}/>}
-                                                onClick={() => navigate('/todos/' + todo.id)}
-                                            />
-                                            <IconButton
-                                                colorScheme="red"
-                                                aria-label="Delete todo"
-                                                icon={<Icon as={FaTrash}/>}
-                                                onClick={() => {
-                                                    selectedTodoId.current = todo.id ? todo.id : -1;
-                                                    onOpen();
-                                                }}
-                                            />
-                                        </HStack></Td>
-                                    }
-                                </Tr>)
+            <Stack>
+                <Table variant="striped" colorScheme="teal">
+                    <TableCaption>All Todos</TableCaption>
+                    <Thead>
+                        <Tr>
+                            <Th>id</Th>
+                            <Th>title</Th>
+                            <Th>content</Th>
+                            {authCtx.payload &&
+                                <Th/>
                             }
-                        </Tbody>
-                    </Table>
-                    {authCtx.isLoggedIn &&
-                        <Box><IconButton
-                            colorScheme="teal"
-                            aria-label="Add todo"
-                            icon={<Icon as={FaPlus}/>}
-                            onClick={() => navigate('/todos/new-todo')}
-                        /></Box>
-                    }
-                </Stack>
-            }
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {todos.map(todo =>
+                            <Tr key={todo.id}>
+                                <Td>{todo.id}</Td>
+                                <Td>{todo.title}</Td>
+                                <Td>{todo.content}</Td>
+                                {authCtx.payload &&
+                                    <Td><HStack>
+                                        <IconButton
+                                            colorScheme="teal"
+                                            aria-label="Edit todo"
+                                            icon={<Icon as={FaEdit}/>}
+                                            onClick={() => navigate('/todos/' + todo.id)}
+                                        />
+                                        <IconButton
+                                            colorScheme="red"
+                                            aria-label="Delete todo"
+                                            icon={<Icon as={FaTrash}/>}
+                                            onClick={() => {
+                                                selectedTodoId.current = todo.id ? todo.id : -1;
+                                                onOpen();
+                                            }}
+                                        />
+                                    </HStack></Td>
+                                }
+                            </Tr>)
+                        }
+                    </Tbody>
+                </Table>
+                {authCtx.payload &&
+                    <Box><IconButton
+                        colorScheme="teal"
+                        aria-label="Add todo"
+                        icon={<Icon as={FaPlus}/>}
+                        onClick={() => navigate('/todos/new-todo')}
+                    /></Box>
+                }
+            </Stack>
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>

@@ -27,7 +27,7 @@ For development purposes use `.env` file. In production set environment variable
 | DATABASE_URL     | postgresql://{user}:{password}@{host}:{port}/{db}?schema=public         |                         |
 | TOKEN_ISSUER     | token issuer                                                            | `node-lab`              |
 | TOKEN_SECRET     | token secret, can be generated via `new-token` node script              |                         | 
-| TOKEN_EXPIRES_IN | token expiration                                                        | `1800s`                 |
+| TOKEN_EXPIRES_IN | token expiration                                                        | `8h`                    |
 
 ## endpoints
 

@@ -16,7 +16,7 @@ import {
     Text
 } from '@chakra-ui/react';
 
-import { ColorModeSwitcher } from '../../ColorModeSwitcher';
+import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import AuthContext from '../../contexts/auth-context';
 
 const Header: FunctionComponent = () => {
@@ -43,7 +43,7 @@ const Header: FunctionComponent = () => {
                     </Box>
                     <Spacer/>
                     <Box p="2">
-                        {authCtx.isLoggedIn ?
+                        {authCtx.payload ?
                             <Button colorScheme="teal" variant="outline" onClick={() => {
                                 authCtx.onLogout();
                                 navigate('/');
@@ -60,10 +60,10 @@ const Header: FunctionComponent = () => {
                         }
                     </Box>
                 </Flex>
-                {authCtx.authResult &&
+                {authCtx.payload &&
                     <Stack>
                         <Text>Welcome dear
-                            user <strong>{authCtx.authResult?.user.firstName} {authCtx.authResult?.user.lastName}</strong></Text>
+                            user <strong>{authCtx.payload.firstName} {authCtx.payload.lastName}</strong></Text>
                     </Stack>
                 }
             </Container>

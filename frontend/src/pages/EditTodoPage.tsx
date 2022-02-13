@@ -27,7 +27,6 @@ const EditTodoPage: FunctionComponent = () => {
         if (id) {
             todoCtx.getTodo(+id)
                 .then(todo => {
-                    console.log(todo);
                     if (todo) {
                         title.current = todo.title;
                         content.current = todo.content;
@@ -45,7 +44,8 @@ const EditTodoPage: FunctionComponent = () => {
         <Container maxW="container.sm">
             {!loaded && <Center><Spinner/></Center>}
             {loaded &&
-                <TodoForm title={title.current} content={content.current} submitButtonLabel="Update" onSubmit={editTodo}/>}
+                <TodoForm title={title.current} content={content.current} submitButtonLabel="Update"
+                          onSubmit={editTodo}/>}
         </Container>
     );
 };

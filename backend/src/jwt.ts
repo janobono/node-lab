@@ -1,7 +1,7 @@
 import jwt, { Jwt, VerifyCallback } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 
-import { APP_CONFIG } from './app';
+import APP_CONFIG from './config';
 
 export interface Payload {
     username: string,

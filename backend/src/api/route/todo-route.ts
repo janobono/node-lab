@@ -10,8 +10,8 @@ router.get('/', TodoController.getTodos);
 router.get('/:id', checkTokenHandler, TodoController.getTodo);
 
 const todoDataHandlers = [
-    body('title').trim().notEmpty().isLength({max: 255}),
-    body('content').trim().notEmpty()
+    body('title').trim().notEmpty().isLength({max: 255}).isString(),
+    body('content').trim().notEmpty().escape()
 ];
 
 router.post('/', checkTokenHandler, todoDataHandlers, TodoController.addTodo);
