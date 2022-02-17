@@ -52,7 +52,7 @@ const HomePage: FunctionComponent = () => {
                 setTodos(loadedTodos);
             }
         )
-    }, [isOpen]);
+    }, [todoCtx, isOpen]);
 
     return (
         <Container maxW="container.sm">

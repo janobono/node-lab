@@ -8,7 +8,7 @@ const TextInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = (pro
             if (props.isNotValid) {
                 props.setNotValid(props.isNotValid(props.value));
             }
-        }, [props.setNotValid, props.value]
+        }, [props]
     );
 
     const firstRun = useRef(true);

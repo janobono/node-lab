@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN yarn && yarn build
+RUN npm install && npm run build
 
 FROM nginx:stable as production
 

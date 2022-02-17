@@ -1,5 +1,0 @@
-import type { LoaderFunction } from 'remix';
-
-export const loader: LoaderFunction = async ({request}) => {
-    return new Response('OK', {'status': 200});
-};

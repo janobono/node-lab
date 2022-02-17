@@ -38,7 +38,7 @@ const EditTodoPage: FunctionComponent = () => {
         } else {
             navigate('/');
         }
-    }, []);
+    }, [todoCtx, id, navigate]);
 
     return (
         <Container maxW="container.sm">

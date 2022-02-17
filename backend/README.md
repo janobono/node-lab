@@ -49,7 +49,7 @@ For development purposes use `.env` file. In production set environment variable
     - `DATABASE_URL="postgresql://app:app@localhost:5432/app?schema=public"`
     - `TOKEN_SECRET=b0bb3ad766eda5bb6ac1e9af603c99cda01f05865048c858a92bbbdb9b2f72b72d6ae7ed0b707e30177e1708708ad73bfbf32499966a36300787b989333ee424`
         - Generate token `yarn new-token`
-- Start dev server `yarn dev`
+- Start dev server `npm run dev`
 
 ### health check
 
@@ -76,13 +76,7 @@ result:
 
 ```json
 {
-  "user": {
-    "username": "jimbop",
-    "firstName": "Jimbo",
-    "lastName": "Pytlik",
-    "email": "jimbo.pytlik@anymail.org"
-  },
-  "token": "{token}"
+  "bearer": "eyJ..."
 }
 ```
 
@@ -99,13 +93,7 @@ result:
 
 ```json
 {
-  "user": {
-    "username": "test",
-    "firstName": "Teston",
-    "lastName": "Tester",
-    "email": "test@test.com"
-  },
-  "token": "{token}"
+  "bearer": "eyJ..."
 }
 ```
 

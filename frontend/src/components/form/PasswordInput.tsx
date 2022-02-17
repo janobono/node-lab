@@ -17,7 +17,7 @@ const PasswordInput: FunctionComponent<PropsWithChildren<InputProps<string>>> = 
             if (props.isNotValid) {
                 props.setNotValid(props.isNotValid(props.value));
             }
-        }, [props.setNotValid, props.value]
+        }, [props]
     );
 
     const firstRun = useRef(true);
